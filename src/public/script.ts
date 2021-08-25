@@ -1,3 +1,5 @@
+import { io } from "socket.io-client";
+
 const addVideoStream = (
   video: HTMLVideoElement,
   stream: MediaStream,
@@ -21,6 +23,9 @@ const main = async () => {
   myVideo.muted = true;
 
   addVideoStream(myVideo, stream, videoGrid);
+
+  const socket = io("/");
+  socket.emit("join-room");
 };
 
 main().catch((err) => console.log("error from room: ", err));

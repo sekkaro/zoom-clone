@@ -1,9 +1,15 @@
 import express from "express";
+import { createServer } from "http";
 import path from "path";
 import { v4 } from "uuid";
+import { Server } from "socket.io";
 
-const main = () => {
+const main = async () => {
   const app = express();
+
+  const server = createServer(app);
+
+  const io = new Server(server);
 
   app.set("views", path.join(__dirname, "/views"));
   app.set("view engine", "ejs");
@@ -18,7 +24,13 @@ const main = () => {
     res.render("room", { roomId: req.params.room });
   });
 
-  app.listen(3030);
+  io.on("connection", (socket) => {
+    socket.on("join-room", () => {
+      console.log("joined room");
+    });
+  });
+
+  server.listen(3030);
 };
 
-main();
+main().catch((err) => console.error(err));
