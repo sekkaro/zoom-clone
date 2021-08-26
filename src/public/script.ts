@@ -1,4 +1,6 @@
 import { io } from "socket.io-client";
+declare var Peer: any;
+declare var ROOM_ID: string;
 
 const addVideoStream = (
   video: HTMLVideoElement,
@@ -12,6 +14,10 @@ const addVideoStream = (
   videoGrid?.append(video);
 };
 
+const connectToNewUser = (userId: any) => {
+  console.log(userId);
+};
+
 const main = async () => {
   const stream = await navigator.mediaDevices.getUserMedia({
     video: true,
@@ -22,10 +28,20 @@ const main = async () => {
   const myVideo = document.createElement("video");
   myVideo.muted = true;
 
+  const peer = new Peer(undefined, {
+    path: "/peerjs",
+    host: "/",
+    port: 3030,
+  });
+
   addVideoStream(myVideo, stream, videoGrid);
 
   const socket = io("/");
-  socket.emit("join-room");
+  peer.on("open", (id: any) => {
+    socket.emit("join-room", ROOM_ID, id);
+  });
+
+  socket.on("user-connected", connectToNewUser);
 };
 
 main().catch((err) => console.log("error from room: ", err));

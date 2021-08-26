@@ -3,11 +3,14 @@ import { createServer } from "http";
 import path from "path";
 import { v4 } from "uuid";
 import { Server } from "socket.io";
+import { ExpressPeerServer } from "peer";
 
 const main = async () => {
   const app = express();
 
   const server = createServer(app);
+
+  const peerServer = ExpressPeerServer(server);
 
   const io = new Server(server);
 
@@ -15,6 +18,7 @@ const main = async () => {
   app.set("view engine", "ejs");
 
   app.use(express.static(path.join(__dirname, "public")));
+  app.use("/peerjs", peerServer);
 
   app.get("/", (_, res) => {
     res.redirect(`/${v4()}`);
@@ -25,8 +29,9 @@ const main = async () => {
   });
 
   io.on("connection", (socket) => {
-    socket.on("join-room", () => {
-      console.log("joined room");
+    socket.on("join-room", (roomId, userId) => {
+      socket.join(roomId);
+      socket.to(roomId).emit("user-connected", userId);
     });
   });
 
