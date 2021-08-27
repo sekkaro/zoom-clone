@@ -1,3 +1,4 @@
+import PeerType from "peerjs";
 import { io } from "socket.io-client";
 declare var Peer: any;
 declare var ROOM_ID: string;
@@ -14,8 +15,17 @@ const addVideoStream = (
   videoGrid?.append(video);
 };
 
-const connectToNewUser = (userId: any) => {
-  console.log(userId);
+const connectToNewUser = (
+  userId: string,
+  peer: PeerType,
+  stream: MediaStream,
+  videoGrid: HTMLElement | null
+) => {
+  const call = peer.call(userId, stream);
+  const video = document.createElement("video");
+  call.on("stream", (userVideoStream) => {
+    addVideoStream(video, userVideoStream, videoGrid);
+  });
 };
 
 const main = async () => {
@@ -28,7 +38,7 @@ const main = async () => {
   const myVideo = document.createElement("video");
   myVideo.muted = true;
 
-  const peer = new Peer(undefined, {
+  const peer: PeerType = new Peer(undefined, {
     path: "/peerjs",
     host: "/",
     port: 3030,
@@ -36,12 +46,22 @@ const main = async () => {
 
   addVideoStream(myVideo, stream, videoGrid);
 
+  peer.on("call", (call) => {
+    call.answer(stream);
+    const video = document.createElement("video");
+    call.on("stream", (userVideoStream) => {
+      addVideoStream(video, userVideoStream, videoGrid);
+    });
+  });
+
   const socket = io("/");
   peer.on("open", (id: any) => {
     socket.emit("join-room", ROOM_ID, id);
   });
 
-  socket.on("user-connected", connectToNewUser);
+  socket.on("user-connected", (userId: string) => {
+    connectToNewUser(userId, peer, stream, videoGrid);
+  });
 };
 
 main().catch((err) => console.log("error from room: ", err));
