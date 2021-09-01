@@ -32,6 +32,10 @@ const main = async () => {
     socket.on("join-room", (roomId, userId) => {
       socket.join(roomId);
       socket.to(roomId).emit("user-connected", userId);
+
+      socket.on("message", (msg) => {
+        io.to(roomId).emit("createMessage", msg);
+      });
     });
   });
 

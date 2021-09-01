@@ -86,6 +86,7 @@ video {
 
 .main__chat_window {
   flex-grow: 1;
+  overflow-y: scroll;
 }
 
 .main__message_container {
@@ -98,4 +99,29 @@ video {
   background-color: transparent;
   border: none;
   color: #f5f5f5;
+}
+
+.message {
+  list-style: none;
+  color: #f5f5f5;
+}
+
+.mute,
+.stop {
+  color: #cc3b33;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #555;
 }
