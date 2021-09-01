@@ -1,6 +1,8 @@
 import PeerType from "peerjs";
 import { io } from "socket.io-client";
 import jquery from "jquery";
+import { __prod__ } from "../constants";
+
 declare var Peer: any;
 declare var ROOM_ID: string;
 declare var $: typeof jquery;
@@ -93,7 +95,7 @@ const main = async () => {
 
   const peer: PeerType = new Peer(
     undefined,
-    process.env.NODE_ENV === "production"
+    __prod__
       ? {
           host: "peerjs-server.herokuapp.com",
           secure: true,
