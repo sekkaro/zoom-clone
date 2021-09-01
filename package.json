@@ -4,8 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "build": "copyfiles -u 1 -e src/**/*.ts src/**/*.* dist/ && browserify -e dist/public/script.js -o dist/public/bundle.js && node dist/index.js",
-    "dev": "tsc-watch --onSuccess \"yarn build\"",
+    "build": "tsc && copyfiles -u 1 -e src/**/*.ts src/**/*.* dist/ && browserify -e dist/public/script.js -o dist/public/bundle.js",
+    "build:dev": "copyfiles -u 1 -e src/**/*.ts src/**/*.* dist/ && browserify -e dist/public/script.js -o dist/public/bundle.js && node dist/index.js",
+    "dev": "tsc-watch --onSuccess \"yarn build:dev\"",
     "dev3": "nodemon dist/index.js",
     "start": "node dist/index.js",
     "start2": "ts-node src/index.ts",

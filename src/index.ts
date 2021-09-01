@@ -39,7 +39,7 @@ const main = async () => {
     });
   });
 
-  server.listen(3030);
+  server.listen(process.env.PORT || 3030);
 };
 
 main().catch((err) => console.error(err));
