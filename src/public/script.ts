@@ -93,21 +93,11 @@ const main = async () => {
   const myVideo = document.createElement("video");
   myVideo.muted = true;
 
-  const peer: PeerType = new Peer(
-    undefined,
-    // deployment
-    {
-      host: "peerjs-server.herokuapp.com",
-      secure: true,
-      port: 443,
-    }
-    // development
-    //  {
-    //       path: "/peerjs",
-    //       host: "/",
-    //       port: 3030,
-    //     }
-  );
+  const peer: PeerType = new Peer(undefined, {
+    path: "/peerjs",
+    host: "/",
+    port: 443, // 3030 on development
+  });
 
   addVideoStream(myVideo, stream, videoGrid);
 
